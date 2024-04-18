@@ -1,9 +1,7 @@
 package mealplanner;
 
-import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.Scanner;
-import java.util.Set;
 
 public class Meal {
     private String category;
@@ -28,6 +26,18 @@ public class Meal {
             System.out.println("Wrong meal category! Choose from: breakfast, lunch, dinner.");
         }
         return setCategory(scanner);
+    }
+
+    public String setName(String name) {
+        return this.name = name;
+    }
+
+    public String setCategory(String category) {
+        return this.category = category;
+    }
+
+    public String[] setIngredients(String[] ingredients) {
+        return this.ingredients = ingredients;
     }
 
     public String setName(Scanner scanner) {
@@ -67,6 +77,18 @@ public class Meal {
                 ingredients:
                 %s
                 """, category, name, String.join("\n", ingredients));
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String[] getIngredients() {
+        return ingredients;
     }
 }
 

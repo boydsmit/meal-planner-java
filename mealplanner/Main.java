@@ -6,7 +6,6 @@ import java.util.Scanner;
 
 public class Main {
     private static final Scanner scanner = new Scanner(System.in);
-    private static final List<Meal> meals = new ArrayList<>();
 
     public static void main(String[] args) {
         mealsDatabase.initialize();
@@ -26,10 +25,12 @@ public class Main {
     }
 
     public static void showMeals() {
-        if (meals.isEmpty()) {
+        Meal[] meals = mealsDatabase.getAllMeals();
+        if (meals.length == 0) {
             System.out.println("No meals saved. Add a meal first.");
             getOption();
         }
+
         System.out.println();
         for (Meal meal : meals) {
             meal.print();
@@ -43,7 +44,7 @@ public class Main {
         String option = scanner.nextLine();
         switch (option.toLowerCase()) {
             case "add":
-                meals.add(addMeal());
+                mealsDatabase.addMealWithIngredients(addMeal());
                 getOption();
                 break;
             case "show":
