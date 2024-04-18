@@ -65,33 +65,56 @@ public class mealsDatabase {
         }
     }
 
-    public static Meal[] getAllMeals() {
+    private static String[] getIngredientsById(int id) throws SQLException {
+        List<String> ingredients = new ArrayList<>();
+        Statement ingredientsStatement = connection.createStatement();
+        ResultSet ingredientsResult = ingredientsStatement.executeQuery("SELECT * FROM public.ingredients where meal_id = " + id);
+
+        while(ingredientsResult.next()) {
+            ingredients.add(ingredientsResult.getString(1));
+        }
+        return ingredients.toArray(String[]::new);
+    }
+
+    private static Meal[] getMealsByResultSet(ResultSet resultSet)  throws SQLException {
         List<Meal> meals = new ArrayList<>();
+        while(resultSet.next()) {
+            Meal curMeal = new Meal();
+            curMeal.setCategory(resultSet.getString("category"));
+            curMeal.setName(resultSet.getString("meal"));
+            curMeal.setIngredients(getIngredientsById(resultSet.getInt(3)));
+
+            meals.add(curMeal);
+        }
+        return meals.toArray(Meal[]::new);
+    }
+
+
+    public static Meal[] getAllMeals() {
         try {
             Statement mealStatement = connection.createStatement();
             ResultSet mealsResult = mealStatement.executeQuery("SELECT * FROM public.meals ORDER BY meal_id ASC ");
-
-            while(mealsResult.next()) {
-                Statement ingredientsStatement = connection.createStatement();
-                ResultSet ingredientsResult = ingredientsStatement.executeQuery("SELECT * FROM public.ingredients where meal_id = " + mealsResult.getInt(3));
-
-                Meal curMeal = new Meal();
-                curMeal.setCategory(mealsResult.getString("category"));
-                curMeal.setName(mealsResult.getString("meal"));
-
-                List<String> ingredients = new ArrayList<>();
-                while(ingredientsResult.next()) {
-                    ingredients.add(ingredientsResult.getString(1));
-                }
-                curMeal.setIngredients(ingredients.toArray(String[]::new));
-
-                meals.add(curMeal);
-            }
+            return getMealsByResultSet(mealsResult);
 
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
             System.exit(126);
         }
-        return meals.toArray(Meal[]::new);
+        return null;
+    }
+
+    public static Meal[] getMealByCategory(String category) {
+        try {
+            PreparedStatement mealStatement = connection.prepareStatement("SELECT * FROM public.meals where meals.category = ? ORDER BY meal_id ASC ");
+            mealStatement.setString(1, category);
+            ResultSet mealsResult = mealStatement.executeQuery();
+            return getMealsByResultSet(mealsResult);
+
+
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            System.exit(126);
+        }
+        return null;
     }
 }

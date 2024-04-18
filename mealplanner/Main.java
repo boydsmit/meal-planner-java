@@ -1,7 +1,5 @@
 package mealplanner;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -25,18 +23,28 @@ public class Main {
     }
 
     public static void showMeals() {
-        Meal[] meals = mealsDatabase.getAllMeals();
-        if (meals.length == 0) {
-            System.out.println("No meals saved. Add a meal first.");
-            getOption();
-        }
+        try {
+            String input = scanner.nextLine();
 
-        System.out.println();
-        for (Meal meal : meals) {
-            meal.print();
-            System.out.println();
+            Meal.possibleCategories.valueOf(input);
+
+            Meal[] meals = mealsDatabase.getMealByCategory(input);
+            if (meals.length == 0) {
+                System.out.println("No meals found.");
+                getOption();
+            }
+
+            System.out.println("Category: " + input + "\n");
+
+            for (Meal meal : meals) {
+                meal.print();
+                System.out.println();
+            }
+            getOption();
+        } catch (Exception ex) {
+            System.out.println("Wrong meal category! Choose from: breakfast, lunch, dinner.");
+            showMeals();
         }
-        getOption();
     }
 
     public static void getOption() {
@@ -48,6 +56,7 @@ public class Main {
                 getOption();
                 break;
             case "show":
+                System.out.println("Which category do you want to print (breakfast, lunch, dinner)?");
                 showMeals();
                 break;
             case "exit":

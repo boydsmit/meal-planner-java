@@ -8,7 +8,7 @@ public class Meal {
     private String name;
     private String[] ingredients;
 
-    private enum possibleCategories {
+    public enum possibleCategories {
         breakfast,
         lunch,
         dinner
@@ -72,11 +72,10 @@ public class Meal {
 
     public void print() {
         System.out.printf("""
-                Category: %s
                 Name: %s
                 ingredients:
                 %s
-                """, category, name, String.join("\n", ingredients));
+                """, name, String.join("\n", ingredients));
     }
 
     public String getCategory() {
