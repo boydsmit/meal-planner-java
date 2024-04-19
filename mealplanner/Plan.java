@@ -5,6 +5,9 @@ public class Plan {
     private String breakfast;
     private String lunch;
     private String dinner;
+    private int breakfastId;
+    private int lunchId;
+    private int dinnerId;
 
 
     public void printDay() {
@@ -32,6 +35,18 @@ public class Plan {
         this.lunch = lunch;
     }
 
+    public void setBreakfastId(int breakfastId) {
+        this.breakfastId = breakfastId;
+    }
+
+    public void setLunchId(int lunchId) {
+        this.lunchId = lunchId;
+    }
+
+    public void setDinnerId(int dinnerId) {
+        this.dinnerId = dinnerId;
+    }
+
     public String getDay() {
         return day;
     }
@@ -46,5 +61,17 @@ public class Plan {
 
     public String getDinner() {
         return dinner;
+    }
+
+    public int getBreakfastId() {
+        return breakfastId;
+    }
+
+    public int getLunchId() {
+        return lunchId;
+    }
+
+    public int getDinnerId() {
+        return dinnerId;
     }
 }

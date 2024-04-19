@@ -1,10 +1,10 @@
 package mealplanner;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.*;
 
 import mealplanner.database.IngredientsHandler;
 import mealplanner.database.MealsDatabase;
@@ -105,10 +105,64 @@ public class Main {
        return Arrays.stream(meals).filter(x -> x.getName().equals(ref.input)).findFirst().get();
     }
 
+    public static void saveCart() throws  SQLException{
+        PlanHandler planHandler = new PlanHandler(connection);
+        IngredientsHandler ingredientsHandler = new IngredientsHandler(connection);
+        Plan[] plans = planHandler.getAllPlans();
+        if (plans.length == 0) {
+            System.out.println("Unable to save. Plan your meals first. ");
+            getOption();
+        }
+        System.out.println("Input a filename:");
+        String fileName = scanner.nextLine();
+
+        List<String> stringList = new ArrayList<>();
+        List<String> ingredientsList = new ArrayList<>();
+        for (Plan plan : plans) {
+           ingredientsList.addAll(Arrays.asList(ingredientsHandler.getIngredientsById(plan.getBreakfastId())));
+            ingredientsList.addAll(Arrays.asList(ingredientsHandler.getIngredientsById(plan.getLunchId())));
+            ingredientsList.addAll(Arrays.asList(ingredientsHandler.getIngredientsById(plan.getDinnerId())));
+        }
+
+        for (String s : ingredientsList) {
+            addOrReplaceString(stringList, s);
+        }
+
+        try {
+        FileWriter fileWriter = new FileWriter(fileName);
+            for (String str : stringList) {
+                fileWriter.write(str + System.lineSeparator());
+            }
+            fileWriter.close();
+            System.out.println("Saved!");
+
+            getOption();
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+            System.exit(126);
+        }
+    }
+
+    private static void addOrReplaceString(List<String> stringList, String value){
+        Optional<String> found = stringList.stream().filter(x -> x.contains(value)).findFirst();
+        if (found.isPresent()) {
+            String foundString = found.get();
+            if (foundString.contains("x")) {
+                int i = Integer.parseInt(foundString.split("x")[1]);
+                String newVal = value + " x" + ++i;
+
+                stringList.replaceAll(x -> x.contains(foundString) ? newVal : x);
+            } else
+                stringList.replaceAll(x -> x.equals(value) ? value + " x2" : x);
+        } else {
+            stringList.add(value);
+        }
+    }
+
     public static void getOption() throws SQLException {
         MealsHandler mealsHandler = new MealsHandler(connection);
         IngredientsHandler ingredientsHandler = new IngredientsHandler(connection);
-        System.out.println("What would you like to do (add, show, plan, exit)?");
+        System.out.println("What would you like to do (add, show, plan, save, exit)?");
         String option = scanner.nextLine();
         switch (option.toLowerCase()) {
             case "add":
@@ -123,6 +177,9 @@ public class Main {
                 break;
             case "plan":
                 planMeal();
+                break;
+            case "save":
+                saveCart();
                 break;
             case "exit":
                 System.out.println("Bye!");

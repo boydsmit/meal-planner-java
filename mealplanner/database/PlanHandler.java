@@ -2,7 +2,6 @@ package mealplanner.database;
 
 import mealplanner.Plan;
 
-import javax.xml.transform.Result;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,10 +43,13 @@ public class PlanHandler {
             Plan plan = new Plan();
             plan.setDay(resultSet.getString("day"));
             plan.setBreakfast(resultSet.getString("meal_option"));
+            plan.setBreakfastId(resultSet.getInt("meal_id"));
             resultSet.next();
             plan.setLunch(resultSet.getString("meal_option"));
+            plan.setLunchId(resultSet.getInt("meal_id"));
             resultSet.next();
             plan.setDinner(resultSet.getString("meal_option"));
+            plan.setDinnerId(resultSet.getInt("meal_id"));
             plans.add(plan);
         }
         return plans.toArray(Plan[]::new);
