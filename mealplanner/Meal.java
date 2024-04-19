@@ -7,6 +7,7 @@ public class Meal {
     private String category;
     private String name;
     private String[] ingredients;
+    private int id;
 
     public enum possibleCategories {
         breakfast,
@@ -70,6 +71,10 @@ public class Meal {
         return input;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public void print() {
         System.out.printf("""
                 Name: %s
@@ -88,6 +93,10 @@ public class Meal {
 
     public String[] getIngredients() {
         return ingredients;
+    }
+
+    public int getId() {
+        return id;
     }
 }
 
